@@ -1,0 +1,18 @@
+# IsoDeck catalog — one entry per line:
+#   Category | Name | URL | Note | direct|page
+# "direct" = the URL points straight to the file (downloaded to the drive).
+# "page"   = opens the vendor page in the browser (for sites without a fixed direct link, e.g. Microsoft).
+# Edit freely. Verify versions/links before distributing to customers.
+Windows | Windows 11 (Microsoft ISO) | https://www.microsoft.com/software-download/windows11 | Choose "Download Windows 11 Disk Image (ISO)" | page
+Windows | Windows 10 (Microsoft ISO) | https://www.microsoft.com/software-download/windows10 | Use the Media Creation Tool or ISO | page
+Linux | Ubuntu Desktop 24.04 LTS | https://releases.ubuntu.com/24.04/ubuntu-24.04.3-desktop-amd64.iso | ~6 GB | direct
+Linux | Linux Mint 22 Cinnamon | https://mirrors.edge.kernel.org/linuxmint/stable/22/linuxmint-22-cinnamon-64bit.iso | ~2.9 GB | direct
+Linux | Debian 12 netinst | https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/ | Pick the netinst .iso | page
+Linux | Fedora Workstation | https://fedoraproject.org/workstation/download | Pick the x86_64 Live ISO | page
+Tools | Hiren's BootCD PE x64 | https://www.hirensbootcd.org/files/HBCD_PE_x64.iso | Windows PE repair toolkit (~3 GB) | direct
+Tools | Memtest86+ | https://www.memtest.org/ | RAM tester | page
+Tools | GParted Live | https://gparted.org/download.php | Partition editor | page
+Tools | Clonezilla Live | https://clonezilla.org/downloads.php | Disk cloning | page
+Tools | Rescuezilla | https://rescuezilla.com/download | Easy backup/restore | page
+Tools | Kaspersky Rescue Disk | https://support.kaspersky.com/krd18 | Offline antivirus | page
+Tools | MediCat USB | https://medicatusb.com/ | Large toolkit (uses Ventoy) | page

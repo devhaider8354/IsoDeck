@@ -1,0 +1,8 @@
+build/
+build-*/
+dist/
+out/
+.vs/
+*.user
+*.log
+third_party/*.zip

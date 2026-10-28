@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version to publish (e.g. v1.0.0). Leave empty to only build.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch Ventoy boot engine
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          New-Item -ItemType Directory -Force tmp-ventoy | Out-Null
+          gh release download --repo ventoy/Ventoy --pattern "*-windows.zip" --pattern "sha256.txt" --dir tmp-ventoy
+          $zip = Get-ChildItem tmp-ventoy -Filter "*-windows.zip" | Select-Object -First 1
+          $expected = (Select-String -Path tmp-ventoy\sha256.txt -Pattern $zip.Name).Line.Split(' ')[0].ToLower()
+          $actual = (Get-FileHash $zip.FullName -Algorithm SHA256).Hash.ToLower()
+          if ($expected -ne $actual) { throw "SHA-256 mismatch for $($zip.Name)" }
+          Write-Host "Verified $($zip.Name) $actual"
+          Copy-Item $zip.FullName third_party\ventoy.zip
+
+      - name: Configure
+        run: cmake -S . -B build -A x64
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Installer
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DBuildDir=..\build\Release installer\IsoDeck.iss
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IsoDeck
+          path: |
+            build/Release/IsoDeck.exe
+            dist/IsoDeck-Setup.exe
+
+      - name: Publish release
+        if: inputs.version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: IsoDeck ${{ inputs.version }}
+          generate_release_notes: true
+          files: dist/IsoDeck-Setup.exe
